@@ -42,11 +42,16 @@ class bag:
 
     def select_slot(self, index):
         """Выбирает слот по индексу и сохраняет название предмета (если слот не пустой)."""
-        self.selected_index = index
-        if self.items[index] is not None:
-            self.selected_item = self.items[index]["name"]
-        else:
+        if self.selected_index == index:
+            # Если выбран тот же слот, сбрасываем выделение
+            self.selected_index = None
             self.selected_item = None
+        else:
+            self.selected_index = index
+            if self.items[index] is not None:
+                self.selected_item = self.items[index]["name"]
+            else:
+                self.selected_item = None
 
 inventory = bag()
 
