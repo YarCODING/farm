@@ -18,13 +18,17 @@ CLOCK = p.time.Clock()
 walk = p.mixer.Sound("sound/walk.wav")
 walk.set_volume(0.5)
 
-shovel = p.mixer.Sound("sound/shovel.mp3")
-shovel.set_volume(0.2)
+shovel_sound = p.mixer.Sound("sound/shovel.mp3")
+shovel_sound.set_volume(0.2)
 
 walk_sound_time = 0
 
 
 #colors
+WHITE = (255, 255, 255)
+GRAY = (180, 180, 180)
+RED = (255, 0, 0)
+
 bg = (0, 206, 209)
 color1 = (255, 0, 0)
 color2 = (0, 150, 0)

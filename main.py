@@ -14,6 +14,7 @@ while True:
     for block in blocks:
         block.draw()
 
+    inventory.draw(SCREEN)
     player.draw()
 
     if lpos:
@@ -36,6 +37,10 @@ while True:
                 p.mixer.music.play()
         if event.type == p.MOUSEBUTTONDOWN and event.button == 3:
             rpos = event.pos
+        if event.type == p.KEYDOWN:
+            if p.K_1 <= event.key <= p.K_8:
+                slot_index = event.key - p.K_1
+                inventory.select_slot(slot_index)
         if event.type == p.MOUSEBUTTONDOWN and event.button == 1:
             lpos = event.pos
         
@@ -48,12 +53,12 @@ while True:
                         block.image = p.image.load('img/showeled.png')
                         block.image = p.transform.scale(block.image, block.size)
                         block.id = 1
-                        shovel.play()
+                        shovel_sound.play()
                     elif block.id == 1:
                         block.image = p.image.load('img/grass_img.png')
                         block.image = p.transform.scale(block.image, block.size)
                         block.id = 0
-                        shovel.play()
+                        shovel_sound.play()
         rpos = None
     
     p.display.flip()

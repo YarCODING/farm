@@ -30,7 +30,6 @@ class Player(behaviors):
                 self.state = 'walk'
             else:   
                 self.state = 'stand'
-                return False
         
             if pos[0] < self.rect.centerx:
                 if self.direction == 'r':
