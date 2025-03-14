@@ -40,8 +40,10 @@ while True:
             lpos = event.pos
         
         for block in blocks:
+            to_player_distance = p.Vector2(player.rect.centerx, player.rect.centery).distance_to(p.Vector2(block.rect.centerx, block.rect.centery))
+
             if rpos:
-                if block.rect.collidepoint(rpos):
+                if block.rect.collidepoint(rpos) and to_player_distance <= 200:
                     if block.id == 0:
                         block.image = p.image.load('img/showeled.png')
                         block.image = p.transform.scale(block.image, block.size)

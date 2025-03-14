@@ -31,6 +31,17 @@ class Player(behaviors):
             else:   
                 self.state = 'stand'
                 return False
+        
+            if pos[0] < self.rect.centerx:
+                if self.direction == 'r':
+                    self.reverse = True
+                self.direction = 'l'
+            else:
+                if self.direction == 'l':
+                    self.reverse = True
+                self.direction = 'r'
+            
+
     
     def animate(self):
         if self.reverse:
