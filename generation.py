@@ -56,7 +56,7 @@ class Generations:
     offset_x = 0
     offset_y = 0
     limit = 0 #max_lim 48
-    def __init__(self, id):
+    def __init__(self, id:int):
         self.id = id
         self.size = (64, 64)
         self.image = p.image.load('img/grass_img.png')

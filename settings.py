@@ -16,8 +16,10 @@ CLOCK = p.time.Clock()
 
 #sounds
 walk = p.mixer.Sound("sound/walk.wav")
-walk.set_volume(0.3)
+walk.set_volume(0.5)
 
+shovel = p.mixer.Sound("sound/shovel.mp3")
+shovel.set_volume(0.2)
 
 walk_sound_time = 0
 

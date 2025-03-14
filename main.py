@@ -48,10 +48,12 @@ while True:
                         block.image = p.image.load('img/showeled.png')
                         block.image = p.transform.scale(block.image, block.size)
                         block.id = 1
+                        shovel.play()
                     elif block.id == 1:
                         block.image = p.image.load('img/grass_img.png')
                         block.image = p.transform.scale(block.image, block.size)
                         block.id = 0
+                        shovel.play()
         rpos = None
     
     p.display.flip()
