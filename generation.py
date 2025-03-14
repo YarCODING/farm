@@ -77,7 +77,6 @@ class Generations:
         self.image = p.transform.scale(self.image, self.size)
 
 
-
         Generations.limit +=1
         if Generations.limit != 48:
             Generations.offset_x += self.size[0]
