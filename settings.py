@@ -25,9 +25,9 @@ walk_sound_time = 0
 
 
 #colors
-WHITE = (255, 255, 255)
-GRAY = (180, 180, 180)
-RED = (255, 0, 0)
+INVENTORYNUM = (85, 43, 25)
+INVENTORYCOLOR = (243, 222, 167)
+INVENTORYTAKE = (85, 43, 25)
 
 bg = (0, 206, 209)
 color1 = (255, 0, 0)

@@ -32,12 +32,12 @@ class bag:
         for i in range(self.slots):
             x = inventory_start_x + i * (slot_size + slot_margin)
             rect = p.Rect(x, inventory_y, slot_size, slot_size)
-            p.draw.rect(surface, GRAY, rect)
+            p.draw.rect(surface, INVENTORYCOLOR, rect)
             if self.items[i] is not None:
                 surface.blit(self.items[i]["icon"], (x, inventory_y))
             if self.selected_index == i:
-                p.draw.rect(surface, RED, rect, 3)
-            num_text = font.render(str(i + 1), True, WHITE)
+                p.draw.rect(surface, INVENTORYTAKE, rect, 3)
+            num_text = font.render(str(i + 1), True, INVENTORYNUM)
             surface.blit(num_text, (x + 5, inventory_y + 5))
 
     def select_slot(self, index):
