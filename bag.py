@@ -17,6 +17,7 @@ class bag:
         self.items = [None] * self.slots
         self.items[0] = {"name": "shovel", "icon": p.transform.scale(p.image.load('img/items/shovel.png'), self.size)}
         self.items[1] = {"name": "watercan", "icon": p.transform.scale(p.image.load('img/items/watercan.png'), self.size)}
+        self.items[2] = {"name": "carrot_bag", "icon": p.transform.scale(p.image.load('img/plants/carrot_bag.png'), self.size)}
         self.selected_item = None
         self.selected_index = None
 

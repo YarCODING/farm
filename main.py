@@ -13,9 +13,11 @@ while True:
 
     for block in blocks:
         block.draw()
+    for plant in plants:
+        plant.draw()
 
-    inventory.draw(SCREEN)
     player.draw()
+    inventory.draw(SCREEN)
 
     if lpos:
         player.move(lpos)
@@ -65,6 +67,24 @@ while True:
                             block.image = p.image.load('img/watered.png')
                             block.image = p.transform.scale(block.image, block.size)
                             block.id = 2
+                        elif  inventory.selected_item == 'carrot_bag':
+                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'carrot'))
+                        elif  inventory.selected_item == 'cabb_bag':
+                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'cabb'))
+                        elif  inventory.selected_item == 'garl_bag':
+                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'garl'))
+                        elif  inventory.selected_item == 'redis_bag':
+                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'redis'))
+                        
+                    elif block.id == 2:
+                        if inventory.selected_item == 'carrot_bag':
+                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'carrot'))
+                        elif  inventory.selected_item == 'cabb_bag':
+                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'cabb'))
+                        elif  inventory.selected_item == 'garl_bag':
+                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'garl'))
+                        elif  inventory.selected_item == 'redis_bag':
+                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'redis'))
         rpos = None
     
     p.display.flip()
