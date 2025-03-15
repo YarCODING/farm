@@ -67,6 +67,7 @@ while True:
                             block.image = p.image.load('img/watered.png')
                             block.image = p.transform.scale(block.image, block.size)
                             block.id = 2
+                            water_sound.play()
                         elif  inventory.selected_item == 'carrot_bag':
                             plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'carrot'))
                         elif  inventory.selected_item == 'cabb_bag':
