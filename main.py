@@ -50,15 +50,21 @@ while True:
             if rpos:
                 if block.rect.collidepoint(rpos) and to_player_distance <= 200:
                     if block.id == 0:
-                        block.image = p.image.load('img/showeled.png')
-                        block.image = p.transform.scale(block.image, block.size)
-                        block.id = 1
-                        shovel_sound.play()
+                        if inventory.selected_item == 'shovel':
+                            block.image = p.image.load('img/showeled.png')
+                            block.image = p.transform.scale(block.image, block.size)
+                            block.id = 1
+                            shovel_sound.play()
                     elif block.id == 1:
-                        block.image = p.image.load('img/grass_img.png')
-                        block.image = p.transform.scale(block.image, block.size)
-                        block.id = 0
-                        shovel_sound.play()
+                        if inventory.selected_item == 'shovel':
+                            block.image = p.image.load('img/grass_img.png')
+                            block.image = p.transform.scale(block.image, block.size)
+                            block.id = 0
+                            shovel_sound.play()
+                        elif inventory.selected_item == 'watercan':
+                            block.image = p.image.load('img/watered.png')
+                            block.image = p.transform.scale(block.image, block.size)
+                            block.id = 2
         rpos = None
     
     p.display.flip()

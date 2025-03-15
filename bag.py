@@ -15,8 +15,8 @@ class bag:
         self.size = (70, 70) 
         self.slots = 8
         self.items = [None] * self.slots
-        self.items[0] = {"name": "Лопата", "icon": p.transform.scale(p.image.load('img/items/shovel.png'), self.size)}
-        self.items[1] = {"name": "Лейка", "icon": p.transform.scale(p.image.load('img/items/watercan.png'), self.size)}
+        self.items[0] = {"name": "shovel", "icon": p.transform.scale(p.image.load('img/items/shovel.png'), self.size)}
+        self.items[1] = {"name": "watercan", "icon": p.transform.scale(p.image.load('img/items/watercan.png'), self.size)}
         self.selected_item = None
         self.selected_index = None
 
