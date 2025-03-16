@@ -14,6 +14,7 @@ while True:
     for block in blocks:
         block.draw()
     for plant in plants:
+        plant.grow()
         plant.draw()
 
     player.draw()
@@ -71,13 +72,13 @@ while True:
                                      
                     if block.id == 1 or block.id == 2:
                         if  inventory.selected_item == 'carrot_bag':
-                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'carrot'))
+                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'carrot', block))
                         elif  inventory.selected_item == 'cabb_bag':
-                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'cabb'))
+                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'cabb', block))
                         elif  inventory.selected_item == 'garl_bag':
-                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'garl'))
+                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'garl', block))
                         elif  inventory.selected_item == 'redis_bag':
-                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'redis'))
+                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'redis', block))
         rpos = None
     
     p.display.flip()
