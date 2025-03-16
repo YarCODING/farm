@@ -22,7 +22,7 @@ shovel_sound = p.mixer.Sound("sound/shovel.mp3")
 shovel_sound.set_volume(0.2)
 
 water_sound = p.mixer.Sound("sound/watering.mp3")
-water_sound.set_volume(0.2)
+water_sound.set_volume(0.1)
 
 walk_sound_time = 0
 
