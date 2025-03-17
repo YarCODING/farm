@@ -118,10 +118,10 @@ def update_day_night():
     if time_of_day < HALF_DAY:
         sunny = True
         # Рассчитываем уровень затемнения (0 ночью, минимально днём)
-        darkness = int(150 * abs((time_of_day - HALF_DAY) / HALF_DAY))  # от 150 до 0
+        darkness = int(200 * abs((time_of_day - HALF_DAY) / HALF_DAY))  # от 150 до 0
     else:
         sunny = False
-        darkness = int(150 * abs((time_of_day - HALF_DAY) / HALF_DAY))  # от 0 до 150
+        darkness = int(200 * abs((time_of_day - HALF_DAY) / HALF_DAY))  # от 0 до 150
 
     # Затемняющий слой
     overlay.fill((0, 0, 0, darkness))
