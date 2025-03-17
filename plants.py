@@ -6,8 +6,8 @@ class Plant:
         self.type = type
         self.stage = 1
         self.size = (48, 48)
-        self.grow_speed = random.randint(500, 800)
-        self.quality = random.randint(800, 1200)
+        self.grow_timer = random.randint(1500, 2000)
+        self.quality = random.randint(2000, 2200)
         self.image = p.transform.scale(p.image.load(f'img/plants/{self.type}1.png'), self.size)
         self.rect = p.Rect(
             x,
@@ -21,16 +21,20 @@ class Plant:
         SCREEN.blit(self.image, (self.rect.x, self.rect.y))
     
     def grow(self):
-        if self.grow_speed == 0 and self.quality > 0:
+        global sunny
+        if self.grow_timer == 0 and self.quality > 0:
             self.stage += 1
             if self.stage <= 4:
                 self.image = p.transform.scale(p.image.load(f'img/plants/{self.type}{self.stage}.png'), self.size)
-            self.grow_speed = random.randint(500, 800)
+            self.grow_timer = random.randint(500, 800)
         elif self.quality <= 0:
             self.image = p.transform.scale(p.image.load(f'img/plants/{self.type}_r.png'), self.size)
         else:
             if self.ground.id == 2:
-                self.grow_speed -= 1
+                if sunny:
+                    self.grow_timer -= 2
+                else:
+                    self.grow_timer -= 1
             else:
                 self.quality -= 1
 

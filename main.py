@@ -8,11 +8,137 @@ p.mixer.music.play(-1)
 lpos = None
 rpos = None
 
+#saves
+def save_game(blocks, plants, inventory, time_of_day):
+    data = {
+        'blocks': [],
+        'plants': [],
+        'inventory': [],
+        'time_of_day': time_of_day
+    }
+    
+    # Сохраняем блоки
+    for block in blocks:
+        data['blocks'].append({'id': block.id, 'dry_timer': block.dry_timer})
+    
+    # Сохраняем растения
+    for plant in plants:
+        data['plants'].append({
+            'type': plant.type,
+            'stage': plant.stage,
+            'x': plant.rect.x,
+            'y': plant.rect.y,
+            'grow_timer': plant.grow_timer,
+            'quality': plant.quality,
+            'ground_id': plant.ground.id
+        })
+    
+    # Сохраняем инвентарь
+    for item in inventory.items:
+        if item is not None:
+            data['inventory'].append(item['name'])
+        else:
+            data['inventory'].append(None)
+
+    with open('save.json', 'w') as f:
+        json.dump(data, f)
+
+
+def load_game():
+    blocks = []
+    plants = []
+    inventory = bag()
+    time_of_day = 0
+    
+    try:
+        with open('save.json', 'r') as f:
+            data = json.load(f)
+        
+        # Загружаем блоки
+        Generations.offset_x = 0
+        Generations.offset_y = 0
+        Generations.limit = 0
+        for block_data in data['blocks']:
+            block = Generations(block_data['id'], block_data['dry_timer'])
+            blocks.append(block)
+        
+        # Загружаем растения
+        for plant_data in data['plants']:
+            # Найти землю, на которой растение
+            ground_block = next((b for b in blocks if b.rect.x == plant_data['x'] and b.rect.y == plant_data['y']), None)
+            if ground_block:
+                plant = Plant(plant_data['x'], plant_data['y'], plant_data['type'], ground_block)
+                plant.stage = plant_data['stage']
+                plant.grow_timer = plant_data['grow_timer']
+                plant.quality = plant_data['quality']
+                plant.image = p.transform.scale(p.image.load(f'img/plants/{plant.type}{plant.stage}.png'), plant.size)
+                plants.append(plant)
+        
+        # Загружаем инвентарь
+        inventory.items = []
+        for item_name in data['inventory']:
+            if item_name is None:
+                inventory.items.append(None)
+            else:
+                if item_name == "shovel":
+                    icon = p.image.load('img/items/shovel.png')
+                elif item_name == "watercan":
+                    icon = p.image.load('img/items/watercan.png')
+                elif item_name == "carrot_bag":
+                    icon = p.image.load('img/plants/carrot_bag.png')
+                else:
+                    icon = None
+                inventory.items.append({"name": item_name, "icon": p.transform.scale(icon, inventory.size)})
+
+        # Загружаем время дня
+        time_of_day = data.get('time_of_day', 0)
+
+        return blocks, plants, inventory, time_of_day
+    except FileNotFoundError:
+        # Если нет файла, создаём новые блоки и инвентарь
+        Generations.offset_x = 0
+        Generations.offset_y = 0
+        Generations.limit = 0
+        for _ in range(510):
+            blocks.append(Generations(0))
+        return blocks, plants, inventory, 2300
+ 
+
+# Настройки
+DAY_LENGTH = 5000
+HALF_DAY = DAY_LENGTH // 2
+
+def update_day_night():
+    global time_of_day, sunny
+    time_of_day = (time_of_day + 1) % DAY_LENGTH
+
+    overlay = p.Surface(SCREEN.get_size(), p.SRCALPHA)
+
+    # Определяем, день или ночь
+    if time_of_day < HALF_DAY:
+        sunny = True
+        # Рассчитываем уровень затемнения (0 ночью, минимально днём)
+        darkness = int(150 * abs((time_of_day - HALF_DAY) / HALF_DAY))  # от 150 до 0
+    else:
+        sunny = False
+        darkness = int(150 * abs((time_of_day - HALF_DAY) / HALF_DAY))  # от 0 до 150
+
+    # Затемняющий слой
+    overlay.fill((0, 0, 0, darkness))
+    SCREEN.blit(overlay, (0, 0))
+
+
+
+
+blocks, plants, inventory, time_of_day = load_game()
+
 while True:
     SCREEN.fill(white)
 
     for block in blocks:
         block.draw()
+        block.dry()
+
     for plant in plants:
         plant.grow()
         plant.draw()
@@ -31,13 +157,12 @@ while True:
     
     player.animate()
 
-
     for event in p.event.get():
         if event.type == p.QUIT:
+            save_game(blocks, plants, inventory, time_of_day)
             p.quit()
             sys.exit()
-        elif event.type == p.USEREVENT:
-                p.mixer.music.play()
+
         if event.type == p.MOUSEBUTTONDOWN and event.button == 3:
             rpos = event.pos
         if event.type == p.KEYDOWN:
@@ -68,18 +193,28 @@ while True:
                             block.image = p.image.load('img/watered.png')
                             block.image = p.transform.scale(block.image, block.size)
                             block.id = 2
+                            block.dry_timer = 2000
+                            water_sound.play()
+                    elif block.id == 2:
+                        if inventory.selected_item == 'watercan':
+                            block.image = p.image.load('img/watered.png')
+                            block.image = p.transform.scale(block.image, block.size)
+                            block.id = 2
+                            block.dry_timer = 2000
                             water_sound.play()
                                      
                     if block.id == 1 or block.id == 2:
                         if  inventory.selected_item == 'carrot_bag':
-                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'carrot', block))
+                            plants.append(Plant(block.rect.x, block.rect.y, 'carrot', block))
                         elif  inventory.selected_item == 'cabb_bag':
-                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'cabb', block))
+                            plants.append(Plant(block.rect.x, block.rect.y, 'cabb', block))
                         elif  inventory.selected_item == 'garl_bag':
-                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'garl', block))
+                            plants.append(Plant(block.rect.x, block.rect.y, 'garl', block))
                         elif  inventory.selected_item == 'redis_bag':
-                            plants.append(Plant(block.rect.centerx - 48 // 2, block.rect.centery - 48 // 2, 'redis', block))
+                            plants.append(Plant(block.rect.x, block.rect.y, 'redis', block))
         rpos = None
+    
+    update_day_night()
     
     p.display.flip()
     CLOCK.tick()

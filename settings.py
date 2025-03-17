@@ -3,6 +3,7 @@ import sys
 from random import*
 from ctypes  import windll
 import random
+import json
 p.init()
 
 
@@ -11,8 +12,10 @@ SCREEN = p.display.set_mode(SCREENSIZE)
 
 FPS = 60
 
-CLOCK = p.time.Clock()
+sunny = True
+time_of_day = 0
 
+CLOCK = p.time.Clock()
 
 #sounds
 walk = p.mixer.Sound("sound/walk.wav")
