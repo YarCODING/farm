@@ -10,6 +10,8 @@ p.init()
 SCREENSIZE = (windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1)) # ширина и высота экрана
 SCREEN = p.display.set_mode(SCREENSIZE)
 
+menu_bg = p.transform.scale(p.image.load(f'img/menu.png'), (SCREENSIZE[0], SCREENSIZE[1]))
+
 FPS = 60
 
 sunny = True
