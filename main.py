@@ -138,7 +138,7 @@ blocks, plants, inventory, time_of_day = load_game()
 play_btn = behaviors(SCREENSIZE[0]/2-108, SCREENSIZE[1]/2+80, 236, 108, p.image.load('img/ui/play.png'))
 exit_btn = behaviors(SCREENSIZE[0]/2-108, SCREENSIZE[1]/2+220, 236, 108, p.image.load('img/ui/exit.png'))
 
-font = p.font.SysFont('Arial', 200, True)
+font = p.font.Font('font.ttf', 200)
 title_txt = font.render('farm :>', True, (255, 255, 255))
 
 game = False
@@ -151,7 +151,7 @@ inventory.add_item('redis_bag', 'img/plants/redis_bag.png')
 while True:
     if menu:
         SCREEN.blit(menu_bg, (0, 0))
-        SCREEN.blit(title_txt, (SCREENSIZE[0]/2-280, SCREENSIZE[1]/2-250))
+        SCREEN.blit(title_txt, (SCREENSIZE[0]/2-150, SCREENSIZE[1]/2-250))
         play_btn.draw()
         exit_btn.draw()
 
