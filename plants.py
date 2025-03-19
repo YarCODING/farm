@@ -7,13 +7,13 @@ class Plant:
         self.stage = 1
         self.size = (48, 48)
         self.grow_timer = random.randint(1500, 2000)
-        self.quality = random.randint(2000, 2200)
+        self.quality = random.randint(5000, 8000)
         self.image = p.transform.scale(p.image.load(f'img/plants/{self.type}1.png'), self.size)
         self.rect = p.Rect(
             x,
             y,
-            self.size[0], # ширина 
-            self.size[1]  # высота
+            self.size[0],
+            self.size[1]
         )
         self.ground = ground
     

@@ -107,10 +107,10 @@ def load_game():
         for _ in range(510):
             blocks.append(Generations(0))
         return blocks, plants, inventory, 2300
- 
+
 
 # Настройки
-DAY_LENGTH = 5000
+DAY_LENGTH = 10000
 HALF_DAY = DAY_LENGTH // 2
 
 def update_day_night():
@@ -123,10 +123,10 @@ def update_day_night():
     if time_of_day < HALF_DAY:
         sunny = True
         # Рассчитываем уровень затемнения (0 ночью, минимально днём)
-        darkness = int(200 * abs((time_of_day - HALF_DAY) / HALF_DAY))  # от 150 до 0
+        darkness = int(200 * abs((time_of_day - HALF_DAY) / HALF_DAY))
     else:
         sunny = False
-        darkness = int(200 * abs((time_of_day - HALF_DAY) / HALF_DAY))  # от 0 до 150
+        darkness = int(200 * abs((time_of_day - HALF_DAY) / HALF_DAY))
 
     # Затемняющий слой
     overlay.fill((0, 0, 0, darkness))
@@ -138,20 +138,17 @@ blocks, plants, inventory, time_of_day = load_game()
 play_btn = behaviors(SCREENSIZE[0]/2-108, SCREENSIZE[1]/2+80, 236, 108, p.image.load('img/ui/play.png'))
 exit_btn = behaviors(SCREENSIZE[0]/2-108, SCREENSIZE[1]/2+220, 236, 108, p.image.load('img/ui/exit.png'))
 
-font = p.font.Font('font.ttf', 200)
-title_txt = font.render('farm :>', True, (255, 255, 255))
+font = p.font.Font('font.ttf', 250)
+title_txt = font.render('farm', True, (255, 255, 255))
 
 game = False
 menu = True
 
-inventory.add_item('cabb_bag', 'img/plants/cabb_bag.png')
-inventory.add_item('garl_bag', 'img/plants/garl_bag.png')
-inventory.add_item('redis_bag', 'img/plants/redis_bag.png')
 
 while True:
     if menu:
         SCREEN.blit(menu_bg, (0, 0))
-        SCREEN.blit(title_txt, (SCREENSIZE[0]/2-150, SCREENSIZE[1]/2-250))
+        SCREEN.blit(title_txt, (SCREENSIZE[0]/2-150, SCREENSIZE[1]/2-300))
         play_btn.draw()
         exit_btn.draw()
 
@@ -236,14 +233,14 @@ while True:
                                 block.image = p.image.load('img/watered.png')
                                 block.image = p.transform.scale(block.image, block.size)
                                 block.id = 2
-                                block.dry_timer = 2000
+                                block.dry_timer = Generations.dry_timer
                                 water_sound.play()
                         elif block.id == 2:
                             if inventory.selected_item == 'watercan':
                                 block.image = p.image.load('img/watered.png')
                                 block.image = p.transform.scale(block.image, block.size)
                                 block.id = 2
-                                block.dry_timer = 2000
+                                block.dry_timer = Generations.dry_timer
                                 water_sound.play()
                                         
                         if block.id == 1 or block.id == 2:
@@ -255,6 +252,15 @@ while True:
                                 plants.append(Plant(block.rect.x, block.rect.y, 'garl', block))
                             elif  inventory.selected_item == 'redis_bag':
                                 plants.append(Plant(block.rect.x, block.rect.y, 'redis', block))
+
+            for plant in plants:
+                to_player_distance = p.Vector2(player.rect.centerx, player.rect.centery).distance_to(p.Vector2(plant.rect.centerx, plant.rect.centery))
+
+                if rpos:
+                    if plant.rect.collidepoint(rpos) and to_player_distance <= 200:
+                        if inventory.selected_item == None:
+                            if plant.quality <= 0:
+                                plants.remove(plant)
         rpos = None
 
         update_day_night()

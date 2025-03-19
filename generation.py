@@ -6,7 +6,8 @@ class Generations:
     offset_x = 0
     offset_y = 0
     limit = 0 #max_lim 30
-    def __init__(self, id:int, dry_timer=2000):
+    dry_timer = 4000
+    def __init__(self, id:int, dry_timer=4000):
         self.id = id
         self.size = (64, 64)
         self.dry_timer = dry_timer
@@ -50,13 +51,13 @@ class Generations:
                     self.dry_timer -= 2
                 else:
                     self.dry_timer -= 1
-                if self.dry_timer < 500:
+                if self.dry_timer < Generations.dry_timer*0.25:
                     self.image = p.transform.scale(p.image.load('img/watered2.png'), self.size)
-                elif self.dry_timer < 1000:
+                elif self.dry_timer < Generations.dry_timer*0.5:
                     self.image = p.transform.scale(p.image.load('img/watered1.png'), self.size)
-                elif self.dry_timer < 1500:
+                elif self.dry_timer < Generations.dry_timer*0.75:
                     self.image = p.transform.scale(p.image.load('img/watered.png'), self.size)
             else:
                 self.id = 1
-                self.dry_timer = 2000
+                self.dry_timer = Generations.dry_timer
                 self.image = p.transform.scale(p.image.load(f'img/showeled.png'), self.size)

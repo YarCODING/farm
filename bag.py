@@ -55,18 +55,3 @@ class bag:
                 self.selected_item = None
 
 inventory = bag()
-
-# class Item(behaviors):
-#     def __init__(self, x, y, w, h, speed:int, type:str):
-#         self.rect = p.Rect(x, y, w, h)
-#         self.size = (w, h)
-#         self.image = p.image.load('img/grass_img.png')
-#         self.speed = speed
-#         self.type = type
-
-#         if self.type == 'shovel':
-#             self.image = p.image.load('img/items/shovel.png')
-
-#         self.image = p.transform.scale(self.image, self.size)
-
-# shovel = Item(0, 0, 32, 32, 100, 'shovel')
