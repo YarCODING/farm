@@ -91,6 +91,14 @@ def load_game():
                     icon = p.image.load('img/plants/garl_bag.png')
                 elif item_name == "redis_bag":
                     icon = p.image.load('img/plants/redis_bag.png')
+                elif item_name == "carrot":
+                    icon = p.image.load('img/plants/carrot.png')
+                elif item_name == "cabb":
+                    icon = p.image.load('img/plants/cabb.png')
+                elif item_name == "garl":
+                    icon = p.image.load('img/plants/garl.png')
+                elif item_name == "redis":
+                    icon = p.image.load('img/plants/redis.png')
                 else:
                     icon = None
                 inventory.items.append({"name": item_name, "icon": p.transform.scale(icon, inventory.size)})
@@ -260,6 +268,9 @@ while True:
                     if plant.rect.collidepoint(rpos) and to_player_distance <= 200:
                         if inventory.selected_item == None:
                             if plant.quality <= 0:
+                                plants.remove(plant)
+                            elif plant.quality > 0:
+                                inventory.add_item(f'{plant.type}', f'img/plants/{plant.type}.png')
                                 plants.remove(plant)
         rpos = None
 
