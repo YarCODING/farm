@@ -16,8 +16,8 @@ class Generations:
         self.rect = p.Rect(
             Generations.offset_x,
             Generations.offset_y,
-            self.size[0], # ширина 
-            self.size[1]  # высота
+            self.size[0], 
+            self.size[1]
         )
 
         if self.id == 0: # трава

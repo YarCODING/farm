@@ -7,6 +7,15 @@ p.mixer.music.play(-1)
 lpos = None
 rpos = None
 
+"""
+Керування:
+Esc - віхід у меню
+Tab - відкривання/закривання додаткового інвентарю
+L клік - переміщення
+R клік - взаємодія
+1-8 - вибір слоту інвентаря
+"""
+
 #saves
 def save_game(blocks, plants, inventory, time_of_day):
     data = {
@@ -33,11 +42,13 @@ def save_game(blocks, plants, inventory, time_of_day):
         })
     
     # Сохраняем инвентарь
+    inventory_data = []
     for item in inventory.items:
-        if item is not None:
-            data['inventory'].append(item['name'])
+        if item is None:
+            inventory_data.append(None)
         else:
-            data['inventory'].append(None)
+            inventory_data.append({"name": item["name"], "count": item["count"]})
+    data["inventory"] = inventory_data
 
     with open('save.json', 'w') as f:
         json.dump(data, f)
@@ -75,40 +86,45 @@ def load_game():
         
         # Загружаем инвентарь
         inventory.items = []
-        for item_name in data['inventory']:
-            if item_name is None:
+        for item_data in data['inventory']:
+            if item_data is None:
                 inventory.items.append(None)
             else:
-                if item_name == "shovel":
+                name = item_data["name"]
+                count = item_data["count"]
+                if name == "shovel":
                     icon = p.image.load('img/items/shovel.png')
-                elif item_name == "watercan":
+                elif name == "watercan":
                     icon = p.image.load('img/items/watercan.png')
-                elif item_name == "carrot_bag":
+                elif name == "carrot_bag":
                     icon = p.image.load('img/plants/carrot_bag.png')
-                elif item_name == "cabb_bag":
+                elif name == "cabb_bag":
                     icon = p.image.load('img/plants/cabb_bag.png')
-                elif item_name == "garl_bag":
+                elif name == "garl_bag":
                     icon = p.image.load('img/plants/garl_bag.png')
-                elif item_name == "redis_bag":
+                elif name == "redis_bag":
                     icon = p.image.load('img/plants/redis_bag.png')
-                elif item_name == "carrot":
+                elif name == "carrot":
                     icon = p.image.load('img/plants/carrot.png')
-                elif item_name == "cabb":
+                elif name == "cabb":
                     icon = p.image.load('img/plants/cabb.png')
-                elif item_name == "garl":
+                elif name == "garl":
                     icon = p.image.load('img/plants/garl.png')
-                elif item_name == "redis":
+                elif name == "redis":
                     icon = p.image.load('img/plants/redis.png')
                 else:
                     icon = None
-                inventory.items.append({"name": item_name, "icon": p.transform.scale(icon, inventory.size)})
+                inventory.items.append({
+                    "name": name,
+                    "icon": p.transform.scale(icon, inventory.size),
+                    "count": count
+                })
 
         # Загружаем время дня
         time_of_day = data.get('time_of_day', 0)
 
         return blocks, plants, inventory, time_of_day
     except FileNotFoundError:
-        # Если нет файла, создаём новые блоки и инвентарь
         Generations.offset_x = 0
         Generations.offset_y = 0
         Generations.limit = 0
@@ -207,16 +223,20 @@ while True:
                 p.quit()
                 sys.exit()
 
-            if event.type == p.KEYDOWN and event.key == p.K_ESCAPE:
-                menu = True
-                game = False
-
-            if event.type == p.MOUSEBUTTONDOWN and event.button == 3:
-                rpos = event.pos
             if event.type == p.KEYDOWN:
+                if event.key == p.K_ESCAPE:
+                    menu = True
+                    game = False
+                if event.key == p.K_TAB:
+                    inventory.toggle_expand()
                 if p.K_1 <= event.key <= p.K_8:
                     slot_index = event.key - p.K_1
                     inventory.select_slot(slot_index)
+                
+            
+            if event.type == p.MOUSEBUTTONDOWN and event.button == 3:
+                rpos = event.pos
+                
             if event.type == p.MOUSEBUTTONDOWN and event.button == 1:
                 lpos = event.pos
             
@@ -269,8 +289,8 @@ while True:
                         if inventory.selected_item == None:
                             if plant.quality <= 0:
                                 plants.remove(plant)
-                            elif plant.quality > 0:
-                                inventory.add_item(f'{plant.type}', f'img/plants/{plant.type}.png')
+                            elif plant.quality > 0 and plant.stage == 4:
+                                inventory.add_extra_item(f'{plant.type}', f'img/plants/{plant.type}.png')
                                 plants.remove(plant)
         rpos = None
 

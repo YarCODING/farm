@@ -13,38 +13,70 @@ inventory_y = SCREENSIZE[1] - slot_size - 20
 class bag:
     def __init__(self):
         self.size = (70, 70) 
-        self.slots = 8
-        self.items = [None] * self.slots
-        self.items[0] = {"name": "shovel", "icon": p.transform.scale(p.image.load('img/items/shovel.png'), self.size)}
-        self.items[1] = {"name": "watercan", "icon": p.transform.scale(p.image.load('img/items/watercan.png'), self.size)}
-        self.items[2] = {"name": "carrot_bag", "icon": p.transform.scale(p.image.load('img/plants/carrot_bag.png'), self.size)}
+        self.base_slots = 8
+        self.extra_slots = 8
+
+        self.slots = self.base_slots
+        self.items = [None] * (self.base_slots + self.extra_slots)
+        self.items[0] = {"name": "shovel", "icon": p.transform.scale(p.image.load('img/items/shovel.png'), self.size), "count": 1}
+        self.items[1] = {"name": "watercan", "icon": p.transform.scale(p.image.load('img/items/watercan.png'), self.size), "count": 1}
+        self.items[2] = {"name": "carrot_bag", "icon": p.transform.scale(p.image.load('img/plants/carrot_bag.png'), self.size), "count": 1}
+
         self.selected_item = None
         self.selected_index = None
+        self.expanded = False
 
-    def add_item(self, item_name:str, icondir:str):
-        """Добавляет новый предмет в первый свободный слот инвентаря."""
-        for i in range(self.slots):
+    def toggle_expand(self):
+        self.expanded = not self.expanded
+        if self.expanded:
+            self.slots = self.base_slots + self.extra_slots
+        else:
+            self.slots = self.base_slots
+
+    def add_base_item(self, item_name: str, icondir: str):
+        for i in range(self.base_slots):
             if self.items[i] is None:
                 self.items[i] = {"name": item_name, "icon": p.transform.scale(p.image.load(icondir), self.size)}
                 break
 
+    def add_extra_item(self, item_name: str, icondir: str):
+        for i in range(self.base_slots, self.base_slots + self.extra_slots):
+            if self.items[i] is not None and self.items[i]["name"] == item_name:
+                self.items[i]["count"] += 1
+
+        for i in range(self.base_slots, self.base_slots + self.extra_slots):
+            if self.items[i] is None:
+                self.items[i] = {
+                    "name": item_name,
+                    "icon": p.transform.scale(p.image.load(icondir), self.size),
+                    "count": 1
+                }
+
+
     def draw(self, surface):
-        """Отрисовывает слоты инвентаря, иконки предметов и выделяет выбранный слот."""
         for i in range(self.slots):
+            start_x = inventory_start_x + 0 * (slot_size + slot_margin)
             x = inventory_start_x + i * (slot_size + slot_margin)
-            rect = p.Rect(x, inventory_y, slot_size, slot_size)
+            y = inventory_y
+
+            if self.expanded and i >= self.base_slots:
+                y = inventory_y - slot_size - 20
+
+            rect = p.Rect(x, y, slot_size, slot_size)
             p.draw.rect(surface, INVENTORYCOLOR, rect)
             if self.items[i] is not None:
-                surface.blit(self.items[i]["icon"], (x, inventory_y))
+                surface.blit(self.items[i]["icon"], (x, y))
+                if self.items[i].get("count", 1) > 1:
+                    count_text = font.render(str(self.items[i]["count"]), True, (0, 0, 0))
+                    surface.blit(count_text, (x + slot_size - 20, y + slot_size - 20))
             if self.selected_index == i:
                 p.draw.rect(surface, INVENTORYTAKE, rect, 3)
             num_text = font.render(str(i + 1), True, INVENTORYNUM)
-            surface.blit(num_text, (x + 5, inventory_y + 5))
+            surface.blit(num_text, (x + 5, y + 5))
+
 
     def select_slot(self, index):
-        """Выбирает слот по индексу и сохраняет название предмета (если слот не пустой)."""
         if self.selected_index == index:
-            # Если выбран тот же слот, сбрасываем выделение
             self.selected_index = None
             self.selected_item = None
         else:
