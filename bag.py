@@ -55,9 +55,17 @@ class bag:
 
     def draw(self, surface):
         for i in range(self.slots):
-            start_x = inventory_start_x + 0 * (slot_size + slot_margin)
-            x = inventory_start_x + i * (slot_size + slot_margin)
+            if i < 8:
+                x_i = i
+            elif i == 8:
+                x_i = 0
+            else:
+                x_i += 1
+
+
+            x = inventory_start_x + x_i * (slot_size + slot_margin)
             y = inventory_y
+
 
             if self.expanded and i >= self.base_slots:
                 y = inventory_y - slot_size - 20
