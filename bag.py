@@ -43,14 +43,15 @@ class bag:
         for i in range(self.base_slots, self.base_slots + self.extra_slots):
             if self.items[i] is not None and self.items[i]["name"] == item_name:
                 self.items[i]["count"] += 1
+                break
 
-        for i in range(self.base_slots, self.base_slots + self.extra_slots):
             if self.items[i] is None:
                 self.items[i] = {
                     "name": item_name,
                     "icon": p.transform.scale(p.image.load(icondir), self.size),
                     "count": 1
                 }
+                break
 
 
     def draw(self, surface):

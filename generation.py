@@ -1,12 +1,10 @@
 from settings import *
 
-maps = [0] * 800
-
 class Generations:
     offset_x = 0
     offset_y = 0
     limit = 0 #max_lim 30
-    dry_timer = 4000
+    dry_timer = 8000
     def __init__(self, id:int, dry_timer=4000):
         self.id = id
         self.size = (64, 64)

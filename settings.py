@@ -7,12 +7,12 @@ import json
 p.init()
 
 
-SCREENSIZE = (windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1)) # ширина и высота экрана
+SCREENSIZE = (windll.user32.GetSystemMetrics(0), windll.user32.GetSystemMetrics(1))
 SCREEN = p.display.set_mode(SCREENSIZE)
 
 menu_bg = p.transform.scale(p.image.load(f'img/menu.png'), (SCREENSIZE[0], SCREENSIZE[1]))
 
-FPS = 60
+FPS = 30
 
 sunny = True
 time_of_day = 0
@@ -31,6 +31,9 @@ water_sound.set_volume(0.1)
 
 walk_sound_time = 0
 
+#fonts and texts
+font = p.font.Font('font.ttf', 250)
+title_txt = font.render('Throne of Roots', True, (255, 255, 255))
 
 #colors
 INVENTORYNUM = (85, 43, 25)

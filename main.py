@@ -162,9 +162,6 @@ blocks, plants, inventory, time_of_day = load_game()
 play_btn = behaviors(SCREENSIZE[0]/2-108, SCREENSIZE[1]/2+80, 236, 108, p.image.load('img/ui/play.png'))
 exit_btn = behaviors(SCREENSIZE[0]/2-108, SCREENSIZE[1]/2+220, 236, 108, p.image.load('img/ui/exit.png'))
 
-font = p.font.Font('font.ttf', 250)
-title_txt = font.render('farm', True, (255, 255, 255))
-
 game = False
 menu = True
 
@@ -172,7 +169,7 @@ menu = True
 while True:
     if menu:
         SCREEN.blit(menu_bg, (0, 0))
-        SCREEN.blit(title_txt, (SCREENSIZE[0]/2-150, SCREENSIZE[1]/2-300))
+        SCREEN.blit(title_txt, (SCREENSIZE[0]/2-600, SCREENSIZE[1]/2-300))
         play_btn.draw()
         exit_btn.draw()
 
@@ -297,4 +294,4 @@ while True:
         update_day_night()
         
     p.display.flip()
-    CLOCK.tick()
+    CLOCK.tick(FPS)
