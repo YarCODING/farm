@@ -19,6 +19,7 @@ time_of_day = 0
 
 CLOCK = p.time.Clock()
 
+
 #sounds
 walk = p.mixer.Sound("sound/walk.wav")
 walk.set_volume(0.5)
@@ -32,8 +33,14 @@ water_sound.set_volume(0.1)
 walk_sound_time = 0
 
 #fonts and texts
-font = p.font.Font('font.ttf', 250)
-title_txt = font.render('Throne of Roots', True, (255, 255, 255))
+big_font = p.font.Font('font.ttf', 250)
+
+title_txt = big_font.render('Throne of Roots', True, (255, 255, 255))
+
+def write(x:int, y:int, text:str, color:tuple, size:int):    
+    font = p.font.Font('font.ttf', size)
+    txt = font.render(text, True, color)
+    SCREEN.blit(txt, (x, y))
 
 #colors
 INVENTORYNUM = (85, 43, 25)

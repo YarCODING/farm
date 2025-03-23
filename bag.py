@@ -1,7 +1,7 @@
 from settings import*
 from behaviors import*
 
-font = p.font.Font(None, 28)
+big_font = p.font.Font(None, 28)
 
 slot_size = 70
 slot_margin = 10
@@ -54,7 +54,7 @@ class bag:
                 break
 
 
-    def draw(self, surface):
+    def draw(self):
         for i in range(self.slots):
             if i < 8:
                 x_i = i
@@ -72,16 +72,16 @@ class bag:
                 y = inventory_y - slot_size - 20
 
             rect = p.Rect(x, y, slot_size, slot_size)
-            p.draw.rect(surface, INVENTORYCOLOR, rect)
+            p.draw.rect(SCREEN, INVENTORYCOLOR, rect)
             if self.items[i] is not None:
-                surface.blit(self.items[i]["icon"], (x, y))
+                SCREEN.blit(self.items[i]["icon"], (x, y))
                 if self.items[i].get("count", 1) > 1:
-                    count_text = font.render(str(self.items[i]["count"]), True, (0, 0, 0))
-                    surface.blit(count_text, (x + slot_size - 20, y + slot_size - 20))
+                    count_text = big_font.render(str(self.items[i]["count"]), True, (0, 0, 0))
+                    SCREEN.blit(count_text, (x + slot_size - 20, y + slot_size - 20))
             if self.selected_index == i:
-                p.draw.rect(surface, INVENTORYTAKE, rect, 3)
-            num_text = font.render(str(i + 1), True, INVENTORYNUM)
-            surface.blit(num_text, (x + 5, y + 5))
+                p.draw.rect(SCREEN, INVENTORYTAKE, rect, 3)
+            num_text = big_font.render(str(i + 1), True, INVENTORYNUM)
+            SCREEN.blit(num_text, (x + 5, y + 5))
 
 
     def select_slot(self, index):

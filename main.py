@@ -161,10 +161,12 @@ blocks, plants, inventory, time_of_day = load_game()
 
 play_btn = behaviors(SCREENSIZE[0]/2-108, SCREENSIZE[1]/2+80, 236, 108, p.image.load('img/ui/play.png'))
 exit_btn = behaviors(SCREENSIZE[0]/2-108, SCREENSIZE[1]/2+220, 236, 108, p.image.load('img/ui/exit.png'))
+shop_exit_btn = behaviors(SCREENSIZE[0]-74, 10, 64, 64, p.image.load('img/ui/shop_exit.png'))
+
 
 game = False
 menu = True
-
+in_shop = False
 
 while True:
     if menu:
@@ -187,8 +189,38 @@ while True:
                     save_game(blocks, plants, inventory, time_of_day)
                     p.quit()
                     sys.exit()
+    if in_shop:
+        SCREEN.fill((168, 102, 74))
+        shop_exit_btn.draw()
+        write(20, 10 , 'buy', (235, 188, 129), 72)
+        write(20, SCREENSIZE[1]/2 , 'sell', (235, 188, 129), 72)
+        inventory.draw()
+
+
+        for event in p.event.get():
+            if event.type == p.QUIT:
+                save_game(blocks, plants, inventory, time_of_day)
+                p.quit()
+                sys.exit()
+            if event.type == p.KEYDOWN:
+                if event.key == p.K_ESCAPE:
+                    menu = True
+                    game = False
+                    in_shop = False
+                if event.key == p.K_TAB:
+                    inventory.toggle_expand()
+                if p.K_1 <= event.key <= p.K_8:
+                    slot_index = event.key - p.K_1
+                    inventory.select_slot(slot_index)
+                    
+            if in_shop and event.type == p.MOUSEBUTTONDOWN and event.button == 1:
+                x, y = event.pos
+                if shop_exit_btn.rect.collidepoint(x, y):
+                    game = True
+                    in_shop = False
+            
                 
-    if game and not menu:
+    if game and not menu and not in_shop:
         SCREEN.fill(white)
 
         for block in blocks:
@@ -199,8 +231,10 @@ while True:
             plant.grow()
             plant.draw()
 
+        shop.draw()
+
         player.draw()
-        inventory.draw(SCREEN)
+        inventory.draw()
 
         if lpos:
             player.move(lpos)
@@ -210,6 +244,9 @@ while True:
             walk_sound_time -= 1
         if player.state == 'stand':
             lpos = None
+
+        if player.rect.colliderect(shop.rect):
+            in_shop = True
         
         player.animate()
         
