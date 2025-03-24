@@ -163,6 +163,8 @@ play_btn = behaviors(SCREENSIZE[0]/2-108, SCREENSIZE[1]/2+80, 236, 108, p.image.
 exit_btn = behaviors(SCREENSIZE[0]/2-108, SCREENSIZE[1]/2+220, 236, 108, p.image.load('img/ui/exit.png'))
 shop_exit_btn = behaviors(SCREENSIZE[0]-74, 10, 64, 64, p.image.load('img/ui/shop_exit.png'))
 
+shop_building = behaviors(SCREENSIZE[0]-256, 0, 256, 256, p.image.load('img/shop.png'))
+coin_UI = behaviors(10, 10, 32, 32, p.image.load('img/ui/coin.png'))
 
 game = False
 menu = True
@@ -192,11 +194,13 @@ while True:
                     sys.exit()
     if in_shop and not was_in_shop:
         SCREEN.fill((168, 102, 74))
-        write(20, 10 , 'buy', (235, 188, 129), 72)
-        write(20, SCREENSIZE[1]/2 , 'sell', (235, 188, 129), 72)
+        write(20, 30, 'Купівля', (235, 188, 129), 72)
+        write(20, SCREENSIZE[1]/2 + 20, 'Продаж', (235, 188, 129), 72)
         inventory.draw()
+        coin_UI.draw()
+        write(45, 3, str(player.money), (235, 188, 129), 48)
         shop_exit_btn.draw()
-
+        shop.draw()
 
         for event in p.event.get():
             if event.type == p.QUIT:
@@ -219,7 +223,9 @@ while True:
                 if shop_exit_btn.rect.collidepoint(x, y):
                     game = True
                     in_shop = False
-                    was_in_shop = True        
+                    was_in_shop = True
+                    
+                shop.check_click(event.pos, inventory, player.money)     
     if game and not menu and not in_shop:
         SCREEN.fill(white)
 
@@ -231,10 +237,12 @@ while True:
             plant.grow()
             plant.draw()
 
-        shop.draw()
+        shop_building.draw()
 
         player.draw()
         inventory.draw()
+        coin_UI.draw()
+        write(45, 3, str(player.money), (235, 188, 129), 48)
 
         if lpos:
             player.move(lpos)
@@ -245,9 +253,9 @@ while True:
         if player.state == 'stand':
             lpos = None
 
-        if player.rect.colliderect(shop.rect) and not was_in_shop:
+        if player.rect.colliderect(shop_building.rect) and not was_in_shop:
             in_shop = True
-        elif not player.rect.colliderect(shop.rect) and was_in_shop:
+        elif not player.rect.colliderect(shop_building.rect) and was_in_shop:
             was_in_shop = False
         
         player.animate()
@@ -275,7 +283,7 @@ while True:
                 
             if event.type == p.MOUSEBUTTONDOWN and event.button == 1:
                 lpos = event.pos
-            
+
             for block in blocks:
                 to_player_distance = p.Vector2(player.rect.centerx, player.rect.centery).distance_to(p.Vector2(block.rect.centerx, block.rect.centery))
 
