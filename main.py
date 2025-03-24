@@ -167,6 +167,7 @@ shop_exit_btn = behaviors(SCREENSIZE[0]-74, 10, 64, 64, p.image.load('img/ui/sho
 game = False
 menu = True
 in_shop = False
+was_in_shop = False
 
 while True:
     if menu:
@@ -189,12 +190,12 @@ while True:
                     save_game(blocks, plants, inventory, time_of_day)
                     p.quit()
                     sys.exit()
-    if in_shop:
+    if in_shop and not was_in_shop:
         SCREEN.fill((168, 102, 74))
-        shop_exit_btn.draw()
         write(20, 10 , 'buy', (235, 188, 129), 72)
         write(20, SCREENSIZE[1]/2 , 'sell', (235, 188, 129), 72)
         inventory.draw()
+        shop_exit_btn.draw()
 
 
         for event in p.event.get():
@@ -218,8 +219,7 @@ while True:
                 if shop_exit_btn.rect.collidepoint(x, y):
                     game = True
                     in_shop = False
-            
-                
+                    was_in_shop = True        
     if game and not menu and not in_shop:
         SCREEN.fill(white)
 
@@ -245,8 +245,10 @@ while True:
         if player.state == 'stand':
             lpos = None
 
-        if player.rect.colliderect(shop.rect):
+        if player.rect.colliderect(shop.rect) and not was_in_shop:
             in_shop = True
+        elif not player.rect.colliderect(shop.rect) and was_in_shop:
+            was_in_shop = False
         
         player.animate()
         
