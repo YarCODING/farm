@@ -22,7 +22,8 @@ def save_game(blocks, plants, inventory, time_of_day):
         'blocks': [],
         'plants': [],
         'inventory': [],
-        'time_of_day': time_of_day
+        'time_of_day': time_of_day,
+        'money': player.money
     }
     
     # Сохраняем блоки
@@ -123,14 +124,16 @@ def load_game():
         # Загружаем время дня
         time_of_day = data.get('time_of_day', 0)
 
-        return blocks, plants, inventory, time_of_day
+        money = data.get('money', 0)
+
+        return blocks, plants, inventory, time_of_day, money
     except FileNotFoundError:
         Generations.offset_x = 0
         Generations.offset_y = 0
         Generations.limit = 0
         for _ in range(510):
             blocks.append(Generations(0))
-        return blocks, plants, inventory, 2300
+        return blocks, plants, inventory, 2300, 0
 
 
 # Настройки
@@ -157,7 +160,7 @@ def update_day_night():
     SCREEN.blit(overlay, (0, 0))
 
 
-blocks, plants, inventory, time_of_day = load_game()
+blocks, plants, inventory, time_of_day, player.money = load_game()
 
 play_btn = behaviors(SCREENSIZE[0]/2-108, SCREENSIZE[1]/2+80, 236, 108, p.image.load('img/ui/play.png'))
 exit_btn = behaviors(SCREENSIZE[0]/2-108, SCREENSIZE[1]/2+220, 236, 108, p.image.load('img/ui/exit.png'))
@@ -195,7 +198,7 @@ while True:
     if in_shop and not was_in_shop:
         SCREEN.fill((168, 102, 74))
         write(20, 30, 'Купівля', (235, 188, 129), 72)
-        write(20, SCREENSIZE[1]/2 + 20, 'Продаж', (235, 188, 129), 72)
+        write(20, SCREENSIZE[1]/2 - 50, 'Продаж', (235, 188, 129), 72)
         inventory.draw()
         coin_UI.draw()
         write(45, 3, str(player.money), (235, 188, 129), 48)
@@ -225,9 +228,10 @@ while True:
                     in_shop = False
                     was_in_shop = True
                     
-                shop.check_click(event.pos, inventory, player.money)     
+                shop.check_click(event.pos, inventory.items)     
     if game and not menu and not in_shop:
         SCREEN.fill(white)
+        camera.move(player)
 
         for block in blocks:
             block.draw()
@@ -289,41 +293,43 @@ while True:
 
                 if rpos:
                     if block.rect.collidepoint(rpos) and to_player_distance <= 200:
-                        if block.id == 0:
-                            if inventory.selected_item == 'shovel':
-                                block.image = p.image.load('img/showeled.png')
-                                block.image = p.transform.scale(block.image, block.size)
-                                block.id = 1
-                                shovel_sound.play()
-                        elif block.id == 1:
-                            if inventory.selected_item == 'shovel':
-                                block.image = p.image.load('img/grass_img.png')
-                                block.image = p.transform.scale(block.image, block.size)
-                                block.id = 0
-                                shovel_sound.play()
-                            elif inventory.selected_item == 'watercan':
-                                block.image = p.image.load('img/watered.png')
-                                block.image = p.transform.scale(block.image, block.size)
-                                block.id = 2
-                                block.dry_timer = Generations.dry_timer
-                                water_sound.play()
-                        elif block.id == 2:
-                            if inventory.selected_item == 'watercan':
-                                block.image = p.image.load('img/watered.png')
-                                block.image = p.transform.scale(block.image, block.size)
-                                block.id = 2
-                                block.dry_timer = Generations.dry_timer
-                                water_sound.play()
-                                        
-                        if block.id == 1 or block.id == 2:
-                            if  inventory.selected_item == 'carrot_bag':
+                        match inventory.selected_item:
+                            case 'shovel':
+                                match block.id:
+                                    case 0:
+                                        block.image = p.image.load('img/showeled.png')
+                                        block.image = p.transform.scale(block.image, block.size)
+                                        block.id = 1
+                                        shovel_sound.play()
+                                    case 1:
+                                        block.image = p.image.load('img/grass_img.png')
+                                        block.image = p.transform.scale(block.image, block.size)
+                                        block.id = 0
+                                        shovel_sound.play()
+                            case 'watercan':
+                                match block.id:
+                                    case 1:
+                                        block.image = p.image.load('img/watered.png')
+                                        block.image = p.transform.scale(block.image, block.size)
+                                        block.id = 2
+                                        block.dry_timer = Generations.dry_timer
+                                        water_sound.play()
+                                    case 2:
+                                        block.image = p.image.load('img/watered.png')
+                                        block.image = p.transform.scale(block.image, block.size)
+                                        block.id = 2
+                                        block.dry_timer = Generations.dry_timer
+                                        water_sound.play()
+
+                            case 'carrot_bag':
                                 plants.append(Plant(block.rect.x, block.rect.y, 'carrot', block))
-                            elif  inventory.selected_item == 'cabb_bag':
+                            case 'cabb_bag':
                                 plants.append(Plant(block.rect.x, block.rect.y, 'cabb', block))
-                            elif  inventory.selected_item == 'garl_bag':
-                                plants.append(Plant(block.rect.x, block.rect.y, 'garl', block))
-                            elif  inventory.selected_item == 'redis_bag':
+                            case 'redis_bag':
                                 plants.append(Plant(block.rect.x, block.rect.y, 'redis', block))
+                            case 'garl_bag':
+                                plants.append(Plant(block.rect.x, block.rect.y, 'garl', block))
+                                
 
             for plant in plants:
                 to_player_distance = p.Vector2(player.rect.centerx, player.rect.centery).distance_to(p.Vector2(plant.rect.centerx, plant.rect.centery))

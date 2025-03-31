@@ -18,12 +18,13 @@ class Generations:
             self.size[1]
         )
 
-        if self.id == 0: # трава
-            self.image = p.image.load('img/grass_img.png')
-        elif self.id == 1: # спахана земля
-            self.image = p.image.load('img/showeled.png')
-        elif self.id == 2: # полита земля
-            self.image = p.image.load('img/watered.png')
+        match self.id:
+            case 0: # трава
+                self.image = p.image.load('img/grass_img.png')
+            case 1: # спахана земля
+                self.image = p.image.load('img/showeled.png')
+            case 2: # полита земля
+                self.image = p.image.load('img/watered.png')
         
         self.image = p.transform.scale(self.image, self.size)
 

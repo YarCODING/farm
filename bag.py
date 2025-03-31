@@ -36,7 +36,7 @@ class bag:
     def add_base_item(self, item_name: str, icondir: str):
         for i in range(self.base_slots):
             if self.items[i] is None:
-                self.items[i] = {"name": item_name, "icon": p.transform.scale(p.image.load(icondir), self.size)}
+                self.items[i] = {"name": item_name, "icon": p.transform.scale(p.image.load(icondir), self.size), "count": 1}
                 break
 
     def add_extra_item(self, item_name: str, icondir: str):

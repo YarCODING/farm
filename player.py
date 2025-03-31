@@ -15,7 +15,7 @@ class Player(behaviors):
         self.im_num = 0
         self.anim_timer = 10
         
-        self.money = 0
+        self.money = 100
 
         self.vect = None
     
