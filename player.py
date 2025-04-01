@@ -25,12 +25,13 @@ class Player(behaviors):
         v3 = v2 - v1
 
         if pos:
-            if self.rect.x != pos[0] and self.rect.y != pos[1]:
+            if v3.length() > self.speed:
                 self.vect = v3.normalize()
-                self.rect.x += self.vect[0]*self.speed
-                self.rect.y += self.vect[1]*self.speed
+                self.rect.x += self.vect[0] * self.speed
+                self.rect.y += self.vect[1] * self.speed
                 self.state = 'walk'
-            else:   
+            else:
+                self.rect.x, self.rect.y = pos
                 self.state = 'stand'
         
             if pos[0] < self.rect.centerx:
@@ -41,7 +42,6 @@ class Player(behaviors):
                 if self.direction == 'l':
                     self.reverse = True
                 self.direction = 'r'
-            
 
     
     def animate(self):

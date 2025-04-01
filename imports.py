@@ -6,3 +6,4 @@ from bag import*
 from plants import*
 from camera import*
 from shop import*
+from animals import*

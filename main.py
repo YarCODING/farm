@@ -174,6 +174,7 @@ menu = True
 in_shop = False
 was_in_shop = False
 
+
 while True:
     if menu:
         SCREEN.blit(menu_bg, (0, 0))
@@ -228,7 +229,7 @@ while True:
                     in_shop = False
                     was_in_shop = True
                     
-                shop.check_click(event.pos, inventory.items)     
+                shop.check_click(event.pos, inventory)
     if game and not menu and not in_shop:
         SCREEN.fill(white)
         camera.move(player)
@@ -236,6 +237,11 @@ while True:
         for block in blocks:
             block.draw()
             block.dry()
+
+        for ant in ants:
+            ant.draw()
+            ant.move()
+            ant.animate()
 
         for plant in plants:
             plant.grow()

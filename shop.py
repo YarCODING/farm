@@ -1,7 +1,6 @@
 from settings import*
 from behaviors import behaviors
 from player import player
-from bag import inventory
 
 class Shop:
     def __init__(self, x, y):
@@ -107,16 +106,17 @@ class Shop:
 
             offset_x += 250
             
-    def check_click(self, mouse_pos, items):
+    def check_click(self, mouse_pos, inventory):
         for item in self.goods:
             if item['buy_button'].collidepoint(mouse_pos):
                 if player.money >= item['price']:
                     player.money -= item['price']
                     inventory.add_base_item(item['name'], item['icon_path'])
+                    break
         
         for item in self.goods2:
             if item['sell_button'].collidepoint(mouse_pos):
-                for inv_item in items:
+                for inv_item in inventory.items:
                     if inv_item:
                         if inv_item["name"] == item["name"]:
                             player.money += item['price']
