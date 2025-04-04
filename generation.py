@@ -5,7 +5,7 @@ class Generations:
     offset_y = 0
     limit = 0 #max_lim 30
     dry_timer = 8000
-    def __init__(self, id:int, dry_timer=4000):
+    def __init__(self, id:int = 0, dry_timer=4000):
         self.id = id
         self.size = (64, 64)
         self.dry_timer = dry_timer

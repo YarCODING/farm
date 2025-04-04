@@ -6,7 +6,7 @@ class Plant:
         self.type = type
         self.stage = 1
         self.size = (48, 48)
-        self.grow_timer = random.randint(1500, 2000)
+        self.grow_timer = random.randint(500, 600)
         self.quality = random.randint(5000, 8000)
         self.image = p.transform.scale(p.image.load(f'img/plants/{self.type}1.png'), self.size)
         self.rect = p.Rect(

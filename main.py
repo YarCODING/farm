@@ -1,4 +1,5 @@
 from imports import*
+from PyQt5.QtWidgets import QMessageBox, QApplication
 
 p.mixer.music.load('music.mp3')
 p.mixer.music.set_volume(0.1)
@@ -165,15 +166,36 @@ blocks, plants, inventory, time_of_day, player.money = load_game()
 play_btn = behaviors(SCREENSIZE[0]/2-108, SCREENSIZE[1]/2+80, 236, 108, p.image.load('img/ui/play.png'))
 exit_btn = behaviors(SCREENSIZE[0]/2-108, SCREENSIZE[1]/2+220, 236, 108, p.image.load('img/ui/exit.png'))
 shop_exit_btn = behaviors(SCREENSIZE[0]-74, 10, 64, 64, p.image.load('img/ui/shop_exit.png'))
+reset_btn = behaviors(SCREENSIZE[0]-42, SCREENSIZE[1]- 42, 32, 32, p.image.load('img/ui/reset.png'))
 
 shop_building = behaviors(SCREENSIZE[0]-256, 0, 256, 256, p.image.load('img/shop.png'))
 coin_UI = behaviors(10, 10, 32, 32, p.image.load('img/ui/coin.png'))
+
+app = QApplication([])
+reset_confirm = QMessageBox()
+reset_confirm.setWindowTitle("reset")
+reset_confirm.setText("Скинути прогрес?\n(Cancel - відміняє сброс)")
+reset_confirm.setIcon(QMessageBox.Warning)
+reset_confirm.setStandardButtons(QMessageBox.Yes|QMessageBox.No|QMessageBox.Cancel)
+
+def reset():
+    global blocks, plants, inventory, time_of_day, player
+    Generations.offset_x = 0
+    Generations.offset_y = 0
+    Generations.limit = 0
+    for _ in range(510):
+        blocks.append(Generations(0))
+
+    plants = []
+    inventory = bag()
+    time_of_day = 2300
+    player.money = 0
+
 
 game = False
 menu = True
 in_shop = False
 was_in_shop = False
-
 
 while True:
     if menu:
@@ -181,6 +203,7 @@ while True:
         SCREEN.blit(title_txt, (SCREENSIZE[0]/2-600, SCREENSIZE[1]/2-300))
         play_btn.draw()
         exit_btn.draw()
+        reset_btn.draw()
 
         for event in p.event.get():
             if event.type == p.QUIT:
@@ -196,6 +219,13 @@ while True:
                     save_game(blocks, plants, inventory, time_of_day)
                     p.quit()
                     sys.exit()
+                elif reset_btn.rect.collidepoint(x, y):
+                    result = reset_confirm.exec_()
+                    if result == QMessageBox.Yes:
+                        reset()
+                    elif result == QMessageBox.Cancel:
+                        p.quit()
+                        sys.exit()
     if in_shop and not was_in_shop:
         SCREEN.fill((168, 102, 74))
         write(20, 30, 'Купівля', (235, 188, 129), 72)
@@ -232,7 +262,6 @@ while True:
                 shop.check_click(event.pos, inventory)
     if game and not menu and not in_shop:
         SCREEN.fill(white)
-        camera.move(player)
 
         for block in blocks:
             block.draw()
